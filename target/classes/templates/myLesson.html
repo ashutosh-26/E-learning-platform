@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<title>View Course</title>
+
+<!-- Add jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<style>
+
+.container {
+    width: 80%;
+}
+</style>
+
+</head>
+<body>
+<fieldset>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Learn Sphere  </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+       <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+       
+          <li class="nav-item">
+          <a class="nav-link" href="/register">Register</a>
+        </li>
+        
+          <li class="nav-item">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+        
+      </ul>
+    </div>
+  </nav>
+    </fieldset>
+    <br><br>
+    <div class="container">
+        <h2 class="mb-4">Lesson Details:</h2>
+        <table class="table table-success table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Lesson Id</th>
+                    <th scope="col">Lesson Name</th>
+                    <th scope="col">Lesson Topics</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td th:text="${lesson.lessonId}"></td>
+                    <td th:text="${lesson.lessonName}"></td>
+                    <td th:text="${lesson.topics}"></td>
+                    
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="mt-4 mb-4">Lesson Video:</h2>
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" 
+                    th:src="@{'https://www.youtube.com/embed/' + ${lesson.link}}" 
+                    title="YouTube video player" frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; 
+                    encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+        </div>
+
+
+        <h2 class="mt-4">Leave a comment here:</h2>
+        <form id="commentForm" action="/addComment" method="post" class="mb-4">
+            <textarea id="commentText" name="comment" class="form-control mb-3"></textarea>
+            <button id="submitButton" type="button" class="btn btn-primary">Add Comment</button>
+        </form>
+
+        <h2>Student's Comments:</h2>
+        <div class="comments-list mt-4">
+            <div th:each="comment : ${comments}">
+                <p th:text="${comment.comment}"></p>
+                <hr>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $("#submitButton").click(function(){
+                var commentText = $("#commentText").val();
+                $.post("/addComment", { comment: commentText })
+                    .done(function(data) {
+                        $(".comments-list").append('<p>' + commentText + '</p><hr>');
+                        $("#commentText").val("");
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
